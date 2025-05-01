@@ -24,8 +24,8 @@ footer {
     border-bottom: none;
     text-align: center;
     font-size: 0.8em;
-    padding: 20px 20px;
-    margin-top: 40px;
+    padding: 20px;
+    margin-top: 30px;
 }
 
 section {
@@ -132,38 +132,34 @@ nav ul li {
 
 .wrapper {
     display: flex;
-    align-items: stretch;
+    flex-direction: row;
+    justify-self: center;
     max-width: 900px;
-    margin: 30px auto;
-    gap: 5px;
+    gap: 10px;
+    padding: 10px;
 }
 
-.image-container {
-    border: 2px solid black;
-    border-top-left-radius: 60px;
-    overflow: hidden;
-    width: 180px;
-    height: auto;
-    flex-shrink: 0;
+picture{
+    width: 18%;
 }
-
 .profile-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
-    display: block;
+    object-fit: cover;
+    border: 2px solid black;
+    border-top-left-radius: 60px;
 }
 
 .profile-container {
     background-color: white;
     border: 2px solid black;
     box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.2);
-    padding: 20px;
+    padding: 5px;
     flex: 1;
 }
 
 .name {
-    font-size: 24px;
+    font-size: 1.3rem;
     color: orange;
     font-weight: bold;
 }
@@ -176,12 +172,12 @@ nav ul li {
 
 .data {
     display: flex;
-    font-size: 14px;
+    font-size: 0.8rem;
     margin: 4px 0;
 }
 
 .label {
-    width: 270px;
+    width: 290px;
     font-weight: bold;
     flex-shrink: 0;
 }
@@ -193,4 +189,84 @@ a {
 
 a:visited {
     color: red;
+}
+
+.profile-container p{
+    font-size: 1rem;
+}
+
+
+/* Dispositivos moviles (320px — 480px) */
+@media (min-width: 320px) and (max-width: 480px) {
+    .student-list {
+        grid-template-columns: 1fr;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .search-form {
+        margin-top: 10px;
+        width: 100%;
+    }
+    
+    .search-form input {
+        width: 100%;
+    }
+    footer{
+        height: 80px;
+        margin-bottom: 20px;
+    }
+    picture{
+        width: 30%;
+    }
+    .data{
+        font-size: 0.6rem;
+    }
+    .label{
+        width: 100px;
+        height: 20px;
+    }
+    .profile-container p{
+        font-size: 0.7rem;
+    }
+}
+
+/* iPads, tablets (481px — 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .student-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    footer{
+        height: 200px;
+    }
+    .profile-container{
+        width: 80%;
+    }
+    .label{
+        width: 130px;
+    }
+    .profile-container p{
+        font-size: 0.9rem;
+    }
+    .image-container{
+        width: 150px;
+    }
+}
+
+/* Pantallas pequeñas, portátiles (769px — 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .student-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+/* Pantallas grandes, escritorios (1025px — 1200px) */
+@media (min-width: 1025px) {
+    .student-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
