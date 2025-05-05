@@ -79,6 +79,47 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.error("Error cargando estudiantes:", error);
         }
 
+        // Perfil construido de forma dinamica en perfil.html
+
+        const params = new URLSearchParams(window.location.search);
+        const ci = params.get("ci");
+
+        fetch(`${ci}/perfil.json`)
+            .then(res => res.json())
+            .then(data => mostrarPerfil(data))
+            .catch(err => console.error("Error cargando perfil:", err));
+
+        function mostrarPerfil(data) {
+            // Foto
+            const profileImg = document.querySelector(".profile-img");
+            profileImg.src = `${ci}/${ci}.jpg`;
+
+            profileImg.onerror = function() {
+                profileImg.onerror = function() {
+                    profileImg.onerror = function() {
+                        profileImg.src = `${ci}/${ci}.JPG`;
+                        profileImg.onerror = null; // Detener la cadena de errores en el último intento de extensión
+                    };
+                    profileImg.src = `${ci}/${ci}.PNG`;
+                };
+                profileImg.src = `${ci}/${ci}.png`;
+            };
+
+            // Nombre
+            document.querySelector(".name").textContent = data.nombre;
+            document.title = data.nombre; // Cambia el <title>
+
+            // Descripcion
+            document.querySelector(".description").textContent = data.descripcion || "";
+
+            // Datos personales
+            document.querySelector(".answer-color").textContent = Array.isArray(data.color) ? data.color.join(", ") : data.color;
+            document.querySelector(".answer-book").textContent = Array.isArray(data.libro) ? data.libro.join(", ") : data.libro;
+            document.querySelector(".answer-music").textContent = Array.isArray(data.musica) ? data.musica.join(", ") : data.musica;
+            document.querySelector(".answer-videogames").textContent = Array.isArray(data.video_juego) ? data.video_juego.join(", ") : data.video_juego;
+            document.querySelector(".answer-programming").textContent = Array.isArray(data.lenguajes) ? data.lenguajes.join(", ") : data.lenguajes;
+            document.querySelector(".answer-mail").textContent = data.email || "";
+        }
 
     } catch (error) {
         console.error("Error al cargar configuración:", error);
