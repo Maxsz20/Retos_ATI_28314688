@@ -1,6 +1,14 @@
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        const response = await fetch("conf/configES.json");
+
+        // Cambio de idioma segun url
+        const paramslang = new URLSearchParams(window.location.search);
+        if (!paramslang.has("lang")) { // Verificamos si ya hay un parámetro ?lang en la URL, si no lo hay, lo agregamos
+            window.location.search = "?lang=es";
+        }
+        const lang = paramslang.get("lang") || "es"; // Si no hay parámetro, por defecto es español
+        const response = await fetch(`conf/config${lang.toUpperCase()}.json`); // Cargamos el archivo de configuración según el idioma
+
         if (!response.ok) throw new Error("No se pudo cargar el archjvo de configuración");
 
         const config = await response.json();
@@ -69,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             estudiantes.forEach(est => {
                 const li = document.createElement("li");
                 li.innerHTML = `
-                <a href="perfil.html?ci=${est.ci}">
+                <a href="perfil.html?ci=${est.ci}&lang=${lang}">
                     <img src="${est.imagen}" alt="${est.nombre}" />
                     <div>${est.nombre}</div>
                 </a>`;
