@@ -59,6 +59,26 @@ document.addEventListener("DOMContentLoaded", async () => {
             mailPerfil.textContent = config.email;
         }
 
+        // Listado de estudiantes en index.html
+        try {
+            const resEstudiantes = await fetch("datos/index.json");
+            const estudiantes = await resEstudiantes.json();
+
+            const ul = document.querySelector(".student-list");
+
+            estudiantes.forEach(est => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                <a href="perfil.html?ci=${est.ci}">
+                    <img src="${est.imagen}" alt="${est.nombre}" />
+                    <div>${est.nombre}</div>
+                </a>`;
+                ul.appendChild(li);
+            });
+        } catch (error) {
+            console.error("Error cargando estudiantes:", error);
+        }
+
 
     } catch (error) {
         console.error("Error al cargar configuración:", error);
