@@ -1,0 +1,13 @@
+{	
+	"nombre":"Maximiliano Barboza",
+	"descripcion":" Estoy estudiando en la facultad de ciencias de la UCV, actualmente me encuentro en el 7mo semestre de la carrera, soy preparador de la materia Base de Datos. me gusta mucho el área de los datos y la Inteligencia Artificial, pero también me gusta el diseño web.",
+	"color": "Azul",
+	"libro": ["Los Juegos del Hambre"],
+	"musica": ["Reguetón", "Pop"],
+	"video_juego": ["FIFA", "Uncharted"],
+	"lenguajes": ["Java", "Dart", "C++", "Python"],
+	"email":"maxibar2001@gmail.com",
+	"ci": "28314688",
+	"genero":"masculino",
+	"fecha_nacimiento":"20/12/2001"
+}
