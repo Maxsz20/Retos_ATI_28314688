@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
     try {
 
-        // Cambio de idioma segun url
+        // ───────────────────────────────────────────────────────
+        // GESTIÓN DE IDIOMA DESDE LA URL
+        // ───────────────────────────────────────────────────────
         const paramslang = new URLSearchParams(window.location.search);
         if (!paramslang.has("lang")) { // Verificamos si ya hay un parámetro ?lang en la URL, si no lo hay, lo agregamos
             window.location.search = "?lang=es";
@@ -10,10 +12,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         const response = await fetch(`conf/config${lang.toUpperCase()}.json`); // Cargamos el archivo de configuración según el idioma
 
         if (!response.ok) throw new Error("No se pudo cargar el archjvo de configuración");
-
         const config = await response.json();
 
-        // Titulo del index.html
+        // ───────────────────────────────────────────────────────
+        //  CONFIGURACIÓN GENERAL DEL SITIO INDEX.HTML (TÍTULO, HEADER, FOOTER)
+        // ───────────────────────────────────────────────────────
+
+        // Titulo
         document.title = config.sitio.join(" ");
 
         // Info del Header
@@ -40,7 +45,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             footerEl.textContent = config.copyRight;
         }
 
-        // Parte perfil.html donde se muestra la info del perfil
+
+        // ───────────────────────────────────────────────────────
+        // CONFIGURACIÓN GENERAL DEL SITIO PERFIL.HTML
+        // ───────────────────────────────────────────────────────
         const colorPerfil = document.querySelector(".color");
         const bookPerfil = document.querySelector(".book");
         const musicPerfil = document.querySelector(".music");
@@ -67,27 +75,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             mailPerfil.textContent = config.email;
         }
 
-        // Listado de estudiantes en index.html
-        try {
-            const resEstudiantes = await fetch("datos/index.json");
-            const estudiantes = await resEstudiantes.json();
 
-            const ul = document.querySelector(".student-list");
-
-            estudiantes.forEach(est => {
-                const li = document.createElement("li");
-                li.innerHTML = `
-                <a href="perfil.html?ci=${est.ci}&lang=${lang}">
-                    <img src="${est.imagen}" alt="${est.nombre}" />
-                    <div>${est.nombre}</div>
-                </a>`;
-                ul.appendChild(li);
-            });
-        } catch (error) {
-            console.error("Error cargando estudiantes:", error);
-        }
-
-        // Perfil construido de forma dinamica en perfil.html
+        // ───────────────────────────────────────────────────────
+        // PERFIL.HTML – Carga de la pagina de forma dinamica según CI
+        // ───────────────────────────────────────────────────────
 
         const params = new URLSearchParams(window.location.search);
         const ci = params.get("ci");
@@ -106,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 profileImg.onerror = function() {
                     profileImg.onerror = function() {
                         profileImg.src = `${ci}/${ci}.JPG`;
-                        profileImg.onerror = null; // Detener la cadena de errores en el último intento de extensión
+                        profileImg.onerror = null; // Detener la cadena de errores en el último intento de extensión de la imagen
                     };
                     profileImg.src = `${ci}/${ci}.PNG`;
                 };
@@ -128,6 +119,72 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.querySelector(".answer-programming").textContent = Array.isArray(data.lenguajes) ? data.lenguajes.join(", ") : data.lenguajes;
             document.querySelector(".answer-mail").textContent = data.email || "";
         }
+
+        // ────────────────────────────────────────────────────────────────────
+        // INDEX.HTML – Cargar lista de estudiantes y renderizado
+        // ────────────────────────────────────────────────────────────────────
+
+        // Hacemos este cambio: Movemos la creacion del listado de estudiantes en el index.html que teniamos mas arriba a esta parte
+        // Esto se hace para que la lista de estudiantes se filtre en tiempo real
+
+        let listaEstudiantes = [];
+
+        try {
+            const resEstudiantes = await fetch("datos/index.json");
+            listaEstudiantes =  await resEstudiantes.json(); // Guardamos para reutilizar
+            renderizarEstudiantes(listaEstudiantes);
+        } catch (error) {
+            console.error("Error cargando estudiantes:", error);
+        }
+
+        function renderizarEstudiantes(estudiantesFiltrados) {
+            const ul = document.querySelector(".student-list");
+            ul.innerHTML = ""; // Limpiamos lista actual para evitar duplicados
+
+            if (estudiantesFiltrados.length === 0) {
+                const mensaje = document.createElement("p");
+
+                mensaje.textContent = `No hay alumnos que tengan en su nombre: ${inputBuscar.value}`;
+                mensaje.style.textAlign = "center";
+                mensaje.style.color = "#0056b3";
+                mensaje.style.gridColumn = "1 / -1";
+
+                ul.appendChild(mensaje);
+                return;
+            }
+
+            estudiantesFiltrados.forEach(est => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <a href="perfil.html?ci=${est.ci}&lang=${lang}">
+                        <img src="${est.imagen}" alt="${est.nombre}" />
+                        <div>${est.nombre}</div>
+                    </a>`;
+                ul.appendChild(li);
+            });
+        }
+
+
+        // ───────────────────────────────────────────────────────
+        // BUSCADOR – Busqueda en la lista de estudiantes del index.html
+        // ───────────────────────────────────────────────────────
+
+        // Esto es por si la busqueda se hace desde el boton de buscar al presionarlo
+        const formBuscar = document.querySelector(".search-form");
+        formBuscar.addEventListener("submit", (e) => {
+            e.preventDefault(); // Evita recarga
+            const query = inputBuscar.value.trim().toLowerCase();
+            const filtrados = listaEstudiantes.filter(est =>
+                est.nombre.toLowerCase().includes(query)
+            );
+            renderizarEstudiantes(filtrados);
+        });
+
+        // Evitamos que dar enter en el buscador recargue la pagina
+        
+        formBuscar.addEventListener("submit", (e) => {
+            e.preventDefault(); // Esto evita que se reinicie la página
+        });
 
     } catch (error) {
         console.error("Error al cargar configuración:", error);
