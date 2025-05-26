@@ -4,11 +4,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         // ───────────────────────────────────────────────────────
         // GESTIÓN DE IDIOMA DESDE LA URL
         // ───────────────────────────────────────────────────────
-        const paramslang = new URLSearchParams(window.location.search);
-        if (!paramslang.has("lang")) { // Verificamos si ya hay un parámetro ?lang en la URL, si no lo hay, lo agregamos
+        const params = new URLSearchParams(window.location.search);
+        if (!params.has("lang")) { // Verificamos si ya hay un parámetro ?lang en la URL, si no lo hay, lo agregamos
             window.location.search = "?lang=es";
         }
-        const lang = paramslang.get("lang") || "es"; // Si no hay parámetro, por defecto es español
+        const lang = params.get("lang") || "es"; // Si no hay parámetro, por defecto es español
         const response = await fetch(`conf/config${lang.toUpperCase()}.json`); // Cargamos el archivo de configuración según el idioma
 
         if (!response.ok) throw new Error("No se pudo cargar el archjvo de configuración");
@@ -79,8 +79,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         // ───────────────────────────────────────────────────────
         // PERFIL.HTML – Carga de la pagina de forma dinamica según CI
         // ───────────────────────────────────────────────────────
-
-        const params = new URLSearchParams(window.location.search);
         const ci = params.get("ci");
 
         fetch(`${ci}/perfil.json`)
@@ -155,13 +153,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             estudiantesFiltrados.forEach(est => {
                 const li = document.createElement("li");
-                li.innerHTML = `
-                    <a href="perfil.html?ci=${est.ci}&lang=${lang}">
-                        <img src="${est.imagen}" alt="${est.nombre}" />
-                        <div>${est.nombre}</div>
-                    </a>`;
+
+                const a = document.createElement("a");
+                a.href = `perfil.html?ci=${est.ci}&lang=${lang}`;
+
+                const img = document.createElement("img");
+                img.src = est.imagen;
+                img.alt = est.nombre;
+
+                const div = document.createElement("div");
+                div.textContent = est.nombre;
+
+                a.appendChild(img);
+                a.appendChild(div);
+                li.appendChild(a);
                 ul.appendChild(li);
             });
+
         }
 
 
