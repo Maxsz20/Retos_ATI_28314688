@@ -67,10 +67,6 @@ nav ul li {
     font-size: 1.4em;
 }
 
-.logo span {
-    font-size: 0.7em;
-}
-
 .search-form input {
     padding: 4px 8px;
     border: 1px solid #ccc;
@@ -241,9 +237,6 @@ a:visited {
         width: 100px;
         height: 20px;
     }
-    .profile-container p{
-        font-size: 0.7rem;
-    }
 }
 
 /* iPads, tablets (481px — 768px) */
@@ -259,9 +252,6 @@ a:visited {
     }
     .label{
         width: 130px;
-    }
-    .profile-container p{
-        font-size: 0.9rem;
     }
     .image-container{
         width: 150px;
