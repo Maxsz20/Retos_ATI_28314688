@@ -44,92 +44,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (footerEl) {
             footerEl.textContent = config.copyRight;
         }
-
-
-        // ───────────────────────────────────────────────────────
-        // CONFIGURACIÓN GENERAL DEL SITIO PERFIL.HTML
-        // ───────────────────────────────────────────────────────
-        const colorPerfil = document.querySelector(".color");
-        const bookPerfil = document.querySelector(".book");
-        const musicPerfil = document.querySelector(".music");
-        const videoGamePerfil = document.querySelector(".videogames");
-        const programmingPerfil = document.querySelector(".programming");
-        const mailPerfil = document.querySelector(".mail");
-
-        if (colorPerfil) {
-            colorPerfil.textContent = config.color;
-        }
-        if (bookPerfil) {
-            bookPerfil.textContent = config.libro;
-        }
-        if (musicPerfil) {
-            musicPerfil.textContent = config.musica;
-        }
-        if (videoGamePerfil) {
-            videoGamePerfil.textContent = config.video_juego;
-        }
-        if (programmingPerfil) {
-            programmingPerfil.textContent = config.lenguajes;
-        }
-        if (mailPerfil) {
-            mailPerfil.textContent = config.email;
-        }
-
-
-        // ───────────────────────────────────────────────────────
-        // PERFIL.HTML – Carga de la pagina de forma dinamica según CI
-        // ───────────────────────────────────────────────────────
-        const ci = params.get("ci");
-
-        fetch(`${ci}/perfil.json`)
-            .then(res => res.json())
-            .then(data => mostrarPerfil(data))
-            .catch(err => console.error("Error cargando perfil:", err));
-
-        function mostrarPerfil(data) {
-            // Foto
-            const profileImg = document.querySelector(".profile-img");
-            profileImg.src = `${ci}/${ci}.jpg`;
-
-            profileImg.onerror = function() {
-                profileImg.onerror = function() {
-                    profileImg.onerror = function() {
-                        profileImg.src = `${ci}/${ci}.JPG`;
-                        profileImg.onerror = null; // Detener la cadena de errores en el último intento de extensión de la imagen
-                    };
-                    profileImg.src = `${ci}/${ci}.PNG`;
-                };
-                profileImg.src = `${ci}/${ci}.png`;
-            };
-
-            // Nombre
-            document.querySelector(".name").textContent = data.nombre;
-            document.title = data.nombre; // Cambia el <title>
-
-            // Descripcion
-            document.querySelector(".description").textContent = data.descripcion || "";
-
-            // Datos personales
-            document.querySelector(".answer-color").textContent = Array.isArray(data.color) ? data.color.join(", ") : data.color;
-            document.querySelector(".answer-book").textContent = Array.isArray(data.libro) ? data.libro.join(", ") : data.libro;
-            document.querySelector(".answer-music").textContent = Array.isArray(data.musica) ? data.musica.join(", ") : data.musica;
-            document.querySelector(".answer-videogames").textContent = Array.isArray(data.video_juego) ? data.video_juego.join(", ") : data.video_juego;
-            document.querySelector(".answer-programming").textContent = Array.isArray(data.lenguajes) ? data.lenguajes.join(", ") : data.lenguajes;
-            document.querySelector(".answer-mail").textContent = data.email || "";
-        }
-
+        
         // ────────────────────────────────────────────────────────────────────
         // INDEX.HTML – Cargar lista de estudiantes y renderizado
         // ────────────────────────────────────────────────────────────────────
-
-        // Hacemos este cambio: Movemos la creacion del listado de estudiantes en el index.html que teniamos mas arriba a esta parte
-        // Esto se hace para que la lista de estudiantes se filtre en tiempo real
 
         let listaEstudiantes = [];
 
         try {
             const resEstudiantes = await fetch("datos/index.json");
-            listaEstudiantes =  await resEstudiantes.json(); // Guardamos para reutilizar
+            listaEstudiantes = await resEstudiantes.json(); // Guardamos para reutilizar
             renderizarEstudiantes(listaEstudiantes);
         } catch (error) {
             console.error("Error cargando estudiantes:", error);
@@ -137,25 +61,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         function renderizarEstudiantes(estudiantesFiltrados) {
             const ul = document.querySelector(".student-list");
-            ul.innerHTML = ""; // Limpiamos lista actual para evitar duplicados
+            ul.innerHTML = ""; // Limpiamos la lista actual para evitar duplicados
 
             if (estudiantesFiltrados.length === 0) {
                 const mensaje = document.createElement("p");
-
                 mensaje.textContent = `No hay alumnos que tengan en su nombre: ${inputBuscar.value}`;
                 mensaje.style.textAlign = "center";
                 mensaje.style.color = "#0056b3";
                 mensaje.style.gridColumn = "1 / -1";
-
                 ul.appendChild(mensaje);
                 return;
             }
 
             estudiantesFiltrados.forEach(est => {
                 const li = document.createElement("li");
-
                 const a = document.createElement("a");
-                a.href = `perfil.html?ci=${est.ci}&lang=${lang}`;
+                // Asegúrate de que la variable "lang" esté definida en algún lugar de tu código
+                a.href = `perfil.html?ci=${est.ci}&lang=${lang || 'es'}`;
 
                 const img = document.createElement("img");
                 img.src = est.imagen;
@@ -169,30 +91,26 @@ document.addEventListener("DOMContentLoaded", async () => {
                 li.appendChild(a);
                 ul.appendChild(li);
             });
-
         }
 
-
         // ───────────────────────────────────────────────────────
-        // BUSCADOR – Busqueda en la lista de estudiantes del index.html
+        // BUSCADOR – Búsqueda en tiempo real a medida que se escribe
         // ───────────────────────────────────────────────────────
 
-        // Esto es por si la busqueda se hace desde el boton de buscar al presionarlo
-        const formBuscar = document.querySelector(".search-form");
-        formBuscar.addEventListener("submit", (e) => {
-            e.preventDefault(); // Evita recarga
-            const query = inputBuscar.value.trim().toLowerCase();
-            const filtrados = listaEstudiantes.filter(est =>
-                est.nombre.toLowerCase().includes(query)
-            );
-            renderizarEstudiantes(filtrados);
-        });
+        // Selecciona el input de búsqueda. Asegúrate de que el HTML tenga un input con id "inputBuscar".
 
-        // Evitamos que dar enter en el buscador recargue la pagina
-        
-        formBuscar.addEventListener("submit", (e) => {
-            e.preventDefault(); // Esto evita que se reinicie la página
-        });
+
+        if (inputBuscar) {
+            // Usamos el evento "input" para capturar cada cambio en el buscador
+            inputBuscar.addEventListener("input", (e) => {
+                const query = e.target.value.trim().toLowerCase();
+                const filtrados = listaEstudiantes.filter(est =>
+                    est.nombre.toLowerCase().includes(query)
+                );
+                renderizarEstudiantes(filtrados);
+            });
+        }
+
 
     } catch (error) {
         console.error("Error al cargar configuración:", error);
