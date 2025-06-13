@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ATI Estudiantes</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li class="logo"></li>
+        <li class="saludo"></li>
+        <li>
+          <form class="search-form">
+            <input type="text" />
+            <button type="submit"></button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="student-list-section">
+    <ul class="student-list"></ul>
+  </section>
+
+  <section id="profile-view" class="wrapper" style="display:none;">
+    <picture><img class="profile-img" src="" alt="Foto"></picture>
+    <div class="profile-container">
+      <div class="name"></div>
+      <p class="description"></p>
+      <div class="data"><span class="label color"></span> <span class="answer-color"></span></div>
+      <div class="data"><span class="label book"></span> <span class="answer-book"></span></div>
+      <div class="data"><span class="label music"></span> <span class="answer-music"></span></div>
+      <div class="data"><span class="label videogames"></span> <span class="answer-videogames"></span></div>
+      <div class="data"><span class="label programming"></span> <span class="answer-programming"><b></b></span></div>
+      <p class="mail"></p> <a href="#" class="answer-mail"></a>
+    </div>
+  </section>
+
+  <footer><b class="copy"></b></footer>
+</body>
+</html>

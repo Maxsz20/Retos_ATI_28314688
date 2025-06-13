@@ -1,8 +1,18 @@
 # Imagen oficial de Apache (httpd)
 FROM httpd:2.4
 
-# Copiamos todos los archivos y carpetas del proyecto al directorio donde Apache sirve los archivos
-COPY . /usr/local/apache2/htdocs/
+FROM python:3.11-slim
 
-# Exponemos el puerto 80 para acceder al servidor Apache
+WORKDIR /app
+
+# Instala Flask
+RUN pip install flask
+
+# Copia todo
+COPY . .
+
+# Expone el puerto para Flask
 EXPOSE 80
+
+# Ejecuta el servidor
+CMD ["python", "app.py"]
