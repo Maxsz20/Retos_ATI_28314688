@@ -7,18 +7,20 @@ app.secret_key = '1235678'
 # Ruta principal (SPA)
 @app.route("/")
 def index():
-    # Cargar idioma de cookie o por defecto ES
-    lang = request.cookies.get('lang', 'es')
-    return render_template("index.html", lang=lang)
+    return render_template("index.html")
 
 # API: configuración por idioma
 @app.route("/api/config")
 def api_config():
-    lang = request.args.get("lang", "es").upper()
-    path = f"conf/config{lang}.json"
-    if not os.path.exists(path): return jsonify({"error": "Idioma no soportado"}), 404
+    lang = request.args.get("lang", "es").lower()
+    if lang not in ("es", "en"):
+        return jsonify({"error": "Idioma no soportado"}), 400
+    path = f"conf/config{lang.upper()}.json"
+    if not os.path.exists(path):
+        return jsonify({"error": "Archivo no encontrado"}), 404
     with open(path, encoding="utf-8") as f:
         return jsonify(json.load(f))
+
 
 # API: listado de estudiantes
 @app.route("/api/estudiantes")
@@ -41,6 +43,7 @@ def cambiar_idioma():
     resp = make_response({"mensaje": "Idioma actualizado"})
     resp.set_cookie("lang", lang)
     return resp
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)

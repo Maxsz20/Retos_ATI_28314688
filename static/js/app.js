@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const RUTA_BASE_IMG = "/static/datos/"; 
+
+    const lang = sessionStorage.getItem("lang") || "es";
     const inputBuscar = document.querySelector(".search-form input");
     const botonBuscar = document.querySelector(".search-form button");
     const ul = document.querySelector(".student-list");
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // CARGAR CONFIGURACIÓN Y LISTA DE ESTUDIANTES
     // ───────────────────────────────────────────────────────
     try {
-        const configRes = await fetch("/api/config");
+        const configRes = await fetch(`/api/config?lang=${lang}`);
         config = await configRes.json();
 
         document.title = config.sitio.join(" ");
